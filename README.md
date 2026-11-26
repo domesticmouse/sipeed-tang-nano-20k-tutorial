@@ -16,6 +16,8 @@ Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`
 - [Lesson 0004: Dissecting Button & Debouncer Verilog](lessons/0004-buttons-generated-verilog.md)
 - [Lesson 0005: PWM Brightness & Finite State Machines](lessons/0005-pwm-and-state-machines.md)
 - [Lesson 0006: Dissecting PWM & FSM Verilog](lessons/0006-pwm-fsm-generated-verilog.md)
+- [Lesson 0007: UART Transmitter: Baud Ticks & Shift Registers](lessons/0007-uart-tx.md)
+- [Lesson 0008: Dissecting UART TX Verilog](lessons/0008-uart-tx-generated-verilog.md)
 - [Reference: Glossary of FPGA & Amaranth Terms](reference/GLOSSARY.md)
 - [Reference: Tang Nano 20K Pinout & Toolchain Sheet](reference/tang-nano-20k-pinout.md)
 
@@ -23,8 +25,8 @@ Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`
 
 ```bash
 # Run all simulation and generated-Verilog tests and linter
-.venv/bin/pytest -v apps/0001-blinky-amaranth-to-verilog/ apps/0002-dissecting-generated-verilog/ apps/0003-buttons-and-debouncing/ apps/0004-buttons-generated-verilog/ apps/0005-pwm-and-state-machines/ apps/0006-pwm-fsm-generated-verilog/
-.venv/bin/ruff check apps/0001-blinky-amaranth-to-verilog/ apps/0002-dissecting-generated-verilog/ apps/0003-buttons-and-debouncing/ apps/0004-buttons-generated-verilog/ apps/0005-pwm-and-state-machines/ apps/0006-pwm-fsm-generated-verilog/ build.py
+.venv/bin/pytest -v apps/0001-blinky-amaranth-to-verilog/ apps/0002-dissecting-generated-verilog/ apps/0003-buttons-and-debouncing/ apps/0004-buttons-generated-verilog/ apps/0005-pwm-and-state-machines/ apps/0006-pwm-fsm-generated-verilog/ apps/0007-uart-tx/ apps/0008-uart-tx-generated-verilog/
+.venv/bin/ruff check apps/0001-blinky-amaranth-to-verilog/ apps/0002-dissecting-generated-verilog/ apps/0003-buttons-and-debouncing/ apps/0004-buttons-generated-verilog/ apps/0005-pwm-and-state-machines/ apps/0006-pwm-fsm-generated-verilog/ apps/0007-uart-tx/ apps/0008-uart-tx-generated-verilog/ build.py
 
 # Build and validate the HTML site
 .venv/bin/python .agents/skills/teach-code/scripts/sync_listing.py --check

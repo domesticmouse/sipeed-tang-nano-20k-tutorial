@@ -64,6 +64,26 @@ _Avoid_: Expecting `m.next = ...` to jump immediately within the current clock c
 A state machine whose outputs (such as `state_leds`) depend exclusively on the current state rather than instantaneous combinational inputs, ensuring clean, glitch-free transitions on clock edges.
 _Avoid_: Leaving combinational outputs unassigned in some `m.State` blocks (which creates unintended latches or stale values)
 
+**UART (8N1)**:
+A two-wire asynchronous serial protocol without a shared clock line that frames each byte with an idle-high (`1`) rest state, one `0` start bit, 8 LSB-first data bits, no parity bit, and one `1` stop bit.
+_Avoid_: Transmitting data bits MSB-first or leaving the serial pin idling at `0`
+
+**Baud Rate**:
+The symbol transmission rate in bits per second (for example `115,200` baud on the Tang Nano 20K's `BL616` bridge), derived from the 27 MHz system clock using an integer cycle divider (`divisor = 234`).
+_Avoid_: Expecting an exact integer divider when `clk_hz / baud` has a fractional remainder (verify total drift stays inside ±2%)
+
+**Shift Register**:
+A chain of cascaded flip-flops (`shifter`) whose bits advance one position per tick toward an output tap (`shifter[0]`), serializing parallel bytes into a single-wire bitstream.
+_Avoid_: Mutating a bit-indexed wire combinationally without a clocked register holding the remaining frame bits
+
+**Ready/Valid Handshake**:
+A synchronous flow-control interface where a producer asserts `valid` alongside `data` and a consumer asserts `ready` when idle, transferring one item cleanly on clock edges where `valid & ready` is high.
+_Avoid_: Dropping `valid` or advancing to the next item before checking `ready`
+
+**Combinational ROM (`Array`)**:
+An Amaranth `Array` of `Const` values indexed dynamically by a `Signal` (`rom[char_index]`), synthesizing into combinational lookup multiplexers (`casez`) with zero clock latency.
+_Avoid_: Indexing a plain Python `list` with a runtime Amaranth `Signal`
+
 ## 2. FPGA Build Pipeline
 
 **Elaboration**:
@@ -123,3 +143,11 @@ _Avoid_: Writing `! bus` when you intend to invert each bit of an active-low out
 **Unsigned Comparator (`<`)**:
 Continuous combinational magnitude comparison (`counter < duty`) that synthesizes into a parallel subtract/carry chain outputting `1` whenever `counter` is strictly below `duty`.
 _Avoid_: Mixing signed and unsigned operands in `<` comparisons without explicit casts
+
+**Bit-Slice Selection (`bus[hi:lo]`)**:
+Verilog syntax selecting a contiguous inclusive range of bits from a vector—such as `shifter[9:1]` to extract the upper 9 bits for right-shifting, or `shifter[0]` to tap the LSB.
+_Avoid_: Using Python exclusive end-index slicing (`[1:]`) inside Verilog source files
+
+**Non-Zero Reset Value (`init`)**:
+Initializing a register (`Signal(10, init=0x3FF)`) to a non-zero constant so both FPGA power-up (`reg [9:0] shifter = 10'h3ff;`) and synchronous reset (`if (rst) ... = 10'h3ff;`) restore that exact state.
+_Avoid_: Assuming every register automatically resets to `0` when an output such as `uart_tx` must idle high
