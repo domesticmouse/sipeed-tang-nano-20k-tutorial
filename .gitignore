@@ -1,0 +1,15 @@
+.venv/
+_site/
+index.html
+lessons/*.html
+reference/*.html
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+apps/*/build/
+apps/*/*.vcd
+apps/*/*.v
+apps/*/*.json
+apps/*/*.fs
+.DS_Store
