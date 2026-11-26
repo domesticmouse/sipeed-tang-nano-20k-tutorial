@@ -30,3 +30,27 @@
   - `0016-sprites-tilemaps-generated-verilog`: Dissecting inferred/explicit Gowin Block RAM (`Memory`) and sprite pipeline Verilog.
   - `0017-i2s-audio-and-playable-game`: MAX98357A I2S chiptune audio synthesis and a complete playable retro game core in Amaranth.
   - `0018-i2s-game-generated-verilog`: Dissecting the full multi-module retro-gaming core and I2S audio Verilog.
+- **Phase 5 — Storage, SDRAM & Game Boy (DMG) Core**
+  - `0019-spi-and-microsd-loading`: SPI master and reading raw ROM files from the onboard microSD slot in Amaranth.
+  - `0020-spi-microsd-generated-verilog`: Dissecting SPI master state-machine, clock-divider, and shift-register Verilog.
+  - `0021-sdram-controller`: Driving the GW2AR-18's integrated 64 Mbit SDRAM (refresh, banks, row/column timing) for cartridge ROMs and system memory in Amaranth.
+  - `0022-sdram-generated-verilog`: Dissecting SDRAM controller FSM, refresh timing, and bidirectional bus Verilog.
+  - `0023-gameboy-sm83-cpu`: SM83 CPU (ALU, register file, fetch/decode/execute FSM, interrupts) verified against `blargg`/`mooneye` CPU test ROMs in `pytest`.
+  - `0024-gameboy-sm83-generated-verilog`: Dissecting SM83 CPU datapath, instruction decode tables, and control FSM Verilog.
+  - `0025-gameboy-bus-timer-joypad-mbc`: Memory map, timers, 8-button joypad input, and MBC1/MBC3 cartridge bank switching in Amaranth.
+  - `0026-gameboy-bus-mbc-generated-verilog`: Dissecting address decoding, timer dividers, and MBC bank-switching Verilog.
+  - `0027-gameboy-ppu-to-hdmi`: 160×144 Game Boy PPU (background, window, 40 sprites, OAM DMA) and scanline upscaling to 640×480 HDMI in Amaranth.
+  - `0028-gameboy-ppu-generated-verilog`: Dissecting PPU pixel pipeline, OAM DMA, and scanline-buffer Verilog.
+  - `0029-gameboy-apu-and-integration`: 4-channel Game Boy APU (2 pulse, wave, noise → MAX98357A I2S) and full playable DMG core integration in Amaranth.
+  - `0030-gameboy-full-core-generated-verilog`: Dissecting the 4-channel APU mixers and full integrated Game Boy DMG Verilog.
+- **Phase 6 — Commodore 64 (C64) Core**
+  - `0031-c64-6510-cpu-and-pla`: 6502/6510 CPU core, 64 KB RAM, and PLA memory-banking logic (BASIC/KERNAL/CHAR ROMs), verified with 6502 functional test suites in Amaranth.
+  - `0032-c64-6510-pla-generated-verilog`: Dissecting 6502/6510 CPU execution FSM and PLA memory-banking Verilog.
+  - `0033-c64-sid-synthesizer`: SID 6581/8580 digital synthesizer (3 voices, multi-waveform oscillators, ADSR envelopes, ring modulation/sync, resonant state-variable filter → I2S audio) in Amaranth.
+  - `0034-c64-sid-generated-verilog`: Dissecting SID DSP oscillators, envelope generators, and resonant filter Verilog.
+  - `0035-c64-vic-ii-video`: VIC-II video controller (character/bitmap modes, sprites, CPU/VIC bus sharing, badlines, raster interrupts → HDMI) in Amaranth.
+  - `0036-c64-vic-ii-generated-verilog`: Dissecting VIC-II bus arbitration, raster-timing, and sprite-compositing Verilog.
+  - `0037-c64-cia-keyboard-and-integration`: Dual CIA 6526 timers/I/O, keyboard input (UART/PS2/USB), `.prg` loading, and full C64 integration in Amaranth.
+  - `0038-c64-full-core-generated-verilog`: Dissecting CIA timer/I/O, keyboard matrix, and full integrated C64 Verilog.
+- **Future Phase (Optional) — Reading, Dissecting & Porting Existing Verilog Cores**
+  - Potential follow-on phase after the Amaranth-authored cores: applying the Verilog literacy built across all even-numbered lessons to read, simulate, port, and customize existing open-source Verilog cores on the Tang Nano 20K.
