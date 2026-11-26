@@ -256,6 +256,19 @@ def render_markdown_fragment(
     return rendered, sidenote_count
 
 
+def render_box_header(kicker: str, title: str, badge: str = "") -> str:
+    parts = ['<div class="box-header"><div class="box-heading-group">']
+    if kicker:
+        parts.append(f'<span class="box-kicker">{html.escape(kicker)}</span>')
+    if title:
+        parts.append(f'<h3 class="box-title">{html.escape(title)}</h3>')
+    parts.append("</div>")
+    if badge:
+        parts.append(f'<span class="box-badge">{html.escape(badge)}</span>')
+    parts.append("</div>")
+    return "".join(parts)
+
+
 def render_quiz_block(
     attrs: dict[str, str],
     yaml_body: str,
@@ -269,10 +282,7 @@ def render_quiz_block(
 
     parts = [
         f'<section class="quiz-box" id="{html.escape(quiz_id)}">',
-        '<div class="box-header">',
-        f'<h3 class="box-title">{html.escape(title)}</h3>',
-        (f'<span class="box-badge">{html.escape(badge)}</span>' if badge else ""),
-        "</div>",
+        render_box_header("RETRIEVAL CHECK", title, badge),
     ]
 
     for q_idx, q in enumerate(questions, start=1):
@@ -357,10 +367,7 @@ def render_exercise_block(
                 f'<section class="exercise-box" id="{html.escape(ex_id)}" '
                 f'data-hint="{html.escape(hint)}" data-success="{html.escape(success)}">'
             ),
-            '<div class="box-header">',
-            f'<h3 class="box-title">{html.escape(title)}</h3>',
-            (f'<span class="box-badge">{html.escape(badge)}</span>' if badge else ""),
-            "</div>",
+            render_box_header("INTERACTIVE LAB", title, badge),
             inner_html,
             '<div class="widget-actions">',
             '<button type="button" class="btn btn-primary" data-action="check">Check Answers</button>',
@@ -438,9 +445,15 @@ def render_body_with_directives(
             inner_html, sidenote_count = render_markdown_fragment(
                 "\n".join(block_lines), rel_out, sidenote_start=sidenote_count
             )
+            kicker_map = {
+                "callout": "NOTE",
+                "callout-warn": "CAUTION",
+                "callout-success": "CONFIRMED",
+                "teacher-prompt": "AGENT PROMPT",
+            }
             css_class = "teacher-prompt" if chunk_kind == "teacher-prompt" else f"callout {chunk_kind}"
-            title_html = f'<div class="box-header"><h3 class="box-title">{html.escape(title)}</h3></div>' if title else ""
-            rendered_parts.append(f'<aside class="{css_class}">{title_html}{inner_html}</aside>')
+            header_html = render_box_header(kicker_map[chunk_kind], title)
+            rendered_parts.append(f'<aside class="{css_class}">{header_html}{inner_html}</aside>')
         elif chunk_kind == "verify":
             attrs, block_lines = payload  # type: ignore[misc]
             ver_id = attrs.get("id", "verify")
@@ -458,10 +471,10 @@ def render_body_with_directives(
                 ),
                 inner_html,
             )
-            badge_html = f'<span class="box-badge">{html.escape(badge)}</span>' if badge else ""
+            header_html = render_box_header("VERIFICATION GATE", title, badge)
             rendered_parts.append(
                 f'<section class="verify-box" id="{html.escape(ver_id)}">'
-                f'<div class="box-header"><h3 class="box-title">{html.escape(title)}</h3>{badge_html}</div>'
+                f"{header_html}"
                 f"{inner_html}</section>"
             )
         elif chunk_kind == "exercise":

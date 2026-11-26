@@ -1,30 +1,31 @@
 :root {
   color-scheme: dark;
-  --bg: #0f1115;
-  --bg-elev: #161a22;
-  --bg-card: #1b202b;
-  --bg-code: #12151c;
-  --border: #2b3344;
-  --border-strong: #3d485f;
-  --text: #e6e9ef;
-  --text-muted: #a4adc0;
-  --heading: #f5f7fa;
+  --bg: #0e1014;
+  --bg-elev: #14171d;
+  --bg-card: #181c24;
+  --bg-code: #11141a;
+  --surface-band: rgba(255, 255, 255, 0.02);
+  --border: #262c38;
+  --border-strong: #3b4456;
+  --text: #e3e7ee;
+  --text-muted: #98a2b3;
+  --heading: #f4f6fa;
   --accent: #5eead4;
   --accent-strong: #2dd4bf;
-  --accent-bg: rgba(45, 212, 191, 0.11);
-  --warn: #fbbf24;
-  --warn-bg: rgba(251, 191, 36, 0.1);
+  --accent-bg: rgba(45, 212, 191, 0.09);
+  --warn-kicker: #d6b06b;
   --success: #4ade80;
-  --success-bg: rgba(74, 222, 128, 0.11);
+  --success-kicker: #7ec89b;
+  --success-bg: rgba(74, 222, 128, 0.1);
   --error: #fb7185;
-  --error-bg: rgba(251, 113, 133, 0.12);
-  --scrollbar-track: #141820;
-  --scrollbar-thumb: #4b556b;
+  --error-bg: rgba(251, 113, 133, 0.11);
+  --scrollbar-track: #12151b;
+  --scrollbar-thumb: #4a5468;
   --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --prose-width: 68ch;
-  --sidenote-width: 24ch;
+  --prose-width: 78ch;
+  --sidenote-width: 26ch;
 
   accent-color: var(--accent-strong);
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -36,6 +37,7 @@
     --scrollbar-thumb: #d1d5db;
     --scrollbar-track: #090b0e;
     --border: #5b6782;
+    --border-strong: #8794b0;
   }
 }
 
@@ -79,7 +81,7 @@ html {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 17px;
+  font-size: 16.5px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
@@ -106,7 +108,7 @@ body {
   color: var(--accent);
   border: 1px solid var(--accent);
   padding: 0.45rem 0.85rem;
-  border-radius: 6px;
+  border-radius: 4px;
   text-decoration: none;
   font-weight: 600;
 }
@@ -118,7 +120,7 @@ body {
 /* Header & Navigation */
 .site-header {
   border-bottom: 1px solid var(--border);
-  background: rgba(15, 17, 21, 0.92);
+  background: rgba(14, 16, 20, 0.94);
   backdrop-filter: blur(8px);
   position: sticky;
   top: 0;
@@ -126,15 +128,15 @@ body {
 }
 
 .course-nav {
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.75rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem 1.5rem;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .nav-breadcrumbs {
@@ -173,8 +175,8 @@ body {
   gap: 0.45rem;
   background: var(--bg-elev);
   border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.2rem 0.7rem;
+  border-radius: 4px;
+  padding: 0.2rem 0.65rem;
 }
 
 .nav-pager-group a {
@@ -207,51 +209,61 @@ body {
 }
 
 .mission-badge {
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 1px solid rgba(94, 234, 212, 0.28);
-  padding: 0.18rem 0.6rem;
-  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  border: 1px solid var(--border-strong);
+  padding: 0.16rem 0.55rem;
+  border-radius: 3px;
   white-space: nowrap;
 }
 
-/* Main Tufte Layout */
+/* Main Hardware Datasheet / Tufte Layout */
 .page-shell {
   flex: 1;
   width: 100%;
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 2.5rem 1.5rem 4rem;
+  padding: 2.5rem 1.75rem 4rem;
 }
 
 .lesson-article {
   position: relative;
-  max-width: var(--prose-width);
+  max-width: 100%;
 }
 
-@media (min-width: 1060px) {
-  .lesson-article {
-    margin-right: calc(var(--sidenote-width) + 3rem);
+@media (min-width: 1120px) {
+  .lesson-article > .page-hero,
+  .lesson-article > h1,
+  .lesson-article > h2,
+  .lesson-article > h3,
+  .lesson-article > h4,
+  .lesson-article > p,
+  .lesson-article > ul,
+  .lesson-article > ol,
+  .lesson-article > blockquote,
+  .lesson-article > .callout,
+  .lesson-article > .teacher-prompt {
+    max-width: min(var(--prose-width), calc(100% - var(--sidenote-width) - 3.25rem));
   }
 }
 
 .page-hero {
   margin-bottom: 2.25rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .page-badge {
   display: inline-block;
-  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--accent);
-  margin-bottom: 0.6rem;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+  margin-bottom: 0.55rem;
 }
 
 h1,
@@ -272,26 +284,27 @@ h4 {
 }
 
 h1 {
-  font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+  font-size: clamp(1.9rem, 3.1vw, 2.5rem);
   margin: 0 0 0.7rem;
 }
 
 .page-subtitle {
-  font-size: 1.12rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
   margin: 0;
   font-family: var(--font-serif);
 }
 
 h2 {
-  font-size: 1.55rem;
-  margin: 2.6rem 0 0.9rem;
-  padding-bottom: 0.35rem;
+  font-size: 1.5rem;
+  margin: 2.75rem 0 0.9rem;
+  padding-bottom: 0.4rem;
   border-bottom: 1px solid var(--border);
+  clear: right;
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: 1.16rem;
   margin: 1.9rem 0 0.65rem;
   font-family: var(--font-sans);
 }
@@ -328,29 +341,36 @@ a:hover {
 
 code {
   font-family: var(--font-mono);
-  font-size: 0.88em;
-  background: rgba(148, 163, 184, 0.13);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  padding: 0.1em 0.35em;
-  border-radius: 4px;
+  font-size: 0.87em;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 0.08em 0.32em;
+  border-radius: 3px;
 }
 
 pre code {
   background: transparent;
   border: 0;
   padding: 0;
-  font-size: 0.87rem;
+  font-size: 0.86rem;
   line-height: 1.55;
 }
 
 blockquote {
-  margin: 1.4rem 0;
-  padding: 0.25rem 0 0.25rem 1.1rem;
-  border-left: 3px solid var(--accent-strong);
+  margin: 1.5rem 0;
+  padding: 0.85rem 1.2rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-style: italic;
 }
 
-/* Sidenotes (Tufte margin on desktop, inline toggle on narrow screens) */
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Sidenotes (Quiet Tufte margin rules, no colored side stripe) */
 .sidenote-number {
   counter-increment: sidenote-counter;
   display: inline;
@@ -379,63 +399,72 @@ blockquote {
 
 .sidenote {
   display: block;
-  margin: 0.5rem 0 0.9rem;
+  margin: 0.6rem 0 1rem;
   padding: 0.65rem 0.9rem;
-  background: var(--bg-elev);
-  border-left: 2px solid var(--accent);
-  border-radius: 0 6px 6px 0;
-  font-size: 0.86rem;
+  background: var(--surface-band);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
   line-height: 1.5;
   color: var(--text-muted);
 }
 
 .sidenote::before {
   content: counter(sidenote-counter) ". ";
-  color: var(--accent);
-  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text);
+  font-weight: 600;
 }
 
-@media (max-width: 1059px) {
+@media (max-width: 1119px) {
   .sidenote[hidden] {
     display: none;
   }
 }
 
-@media (min-width: 1060px) {
-  .sidenote-toggle {
+@media (min-width: 1120px) {
+  .lesson-article > p .sidenote-toggle,
+  .lesson-article > ul .sidenote-toggle,
+  .lesson-article > ol .sidenote-toggle {
     cursor: default;
     pointer-events: none;
   }
 
-  .sidenote,
-  .sidenote[hidden] {
+  .lesson-article > p .sidenote,
+  .lesson-article > p .sidenote[hidden],
+  .lesson-article > ul .sidenote,
+  .lesson-article > ul .sidenote[hidden],
+  .lesson-article > ol .sidenote,
+  .lesson-article > ol .sidenote[hidden] {
     display: block;
     float: right;
     clear: right;
     width: var(--sidenote-width);
-    margin: 0.15rem calc(-1 * (var(--sidenote-width) + 2.4rem)) 1rem 0;
-    padding: 0.3rem 0 0.3rem 0.85rem;
+    margin: 0.15rem calc(-1 * (var(--sidenote-width) + 2.5rem)) 1.1rem 0;
+    padding: 0.45rem 0 0.35rem;
     background: transparent;
-    border-left: 1px solid var(--border-strong);
-    border-radius: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 0;
   }
 }
 
-/* Figures, Code & Mermaid */
+/* Full-Width Code Figures, Mermaid Diagrams & Tables */
 .code-figure,
 .mermaid-figure {
-  margin: 1.5rem 0;
+  clear: right;
+  margin: 1.6rem 0;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--bg-code);
   overflow: hidden;
 }
 
 .code-figure figcaption,
 .mermaid-figure figcaption {
-  padding: 0.55rem 1rem;
-  font-size: 0.82rem;
-  font-weight: 600;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--text-muted);
   background: var(--bg-elev);
   border-bottom: 1px solid var(--border);
@@ -448,13 +477,13 @@ blockquote {
 
 .code-figure pre {
   margin: 0;
-  padding: 1rem 1.15rem;
+  padding: 1.05rem 1.25rem;
   overflow-x: auto;
 }
 
 .mermaid-figure pre.mermaid {
   margin: 0;
-  padding: 1.25rem;
+  padding: 1.35rem;
   display: flex;
   justify-content: center;
   background: var(--bg-code);
@@ -463,17 +492,20 @@ blockquote {
 
 /* Tables */
 .table-caption {
-  font-size: 0.88rem;
-  font-weight: 600;
+  clear: right;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--text-muted);
-  margin: 1.6rem 0 0.45rem;
+  margin: 1.75rem 0 0.5rem;
 }
 
 .table-scroll {
+  clear: right;
   overflow-x: auto;
-  margin: 0 0 1.6rem;
+  margin: 0 0 1.75rem;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--bg-elev);
 }
 
@@ -486,13 +518,13 @@ blockquote {
 .ref-table th,
 .ref-table td {
   text-align: left;
-  padding: 0.65rem 0.9rem;
+  padding: 0.65rem 1rem;
   border-bottom: 1px solid var(--border);
   vertical-align: top;
 }
 
 .ref-table th {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.025);
   color: var(--heading);
   font-weight: 600;
 }
@@ -501,63 +533,81 @@ blockquote {
   border-bottom: 0;
 }
 
-/* Callouts & Teacher Prompts */
+/* Hardware Datasheet Bands (Callouts, Teacher Prompts, Labs, Quizzes) */
 .callout,
-.teacher-prompt,
+.teacher-prompt {
+  margin: 1.8rem 0;
+  padding: 1.1rem 1.25rem;
+  border-top: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-band);
+}
+
+.callout > :last-child,
+.teacher-prompt > :last-child {
+  margin-bottom: 0;
+}
+
 .exercise-box,
 .verify-box,
 .quiz-box {
-  margin: 1.75rem 0;
-  padding: 1.2rem 1.3rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
+  clear: right;
+  margin: 2rem 0;
+  padding: 1.35rem 1.5rem;
+  border-top: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border);
   background: var(--bg-elev);
-}
-
-.callout {
-  border-left: 4px solid var(--accent);
-}
-
-.callout-warn {
-  border-left: 4px solid var(--warn);
-  background: linear-gradient(180deg, var(--warn-bg), var(--bg-elev));
-}
-
-.callout-success {
-  border-left: 4px solid var(--success);
-  background: linear-gradient(180deg, var(--success-bg), var(--bg-elev));
-}
-
-.teacher-prompt {
-  border-left: 4px solid #a78bfa;
-  background: linear-gradient(180deg, rgba(167, 139, 250, 0.09), var(--bg-elev));
 }
 
 .box-header {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 0.5rem 1rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.box-heading-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.box-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.callout-warn .box-kicker {
+  color: var(--warn-kicker);
+}
+
+.callout-success .box-kicker {
+  color: var(--success-kicker);
 }
 
 .box-title {
   font-family: var(--font-sans);
-  font-size: 1.05rem;
+  font-size: 1.04rem;
   font-weight: 700;
   color: var(--heading);
   margin: 0;
 }
 
 .box-badge {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 1px solid rgba(94, 234, 212, 0.25);
-  border-radius: 999px;
-  padding: 0.12rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  padding: 0.14rem 0.5rem;
 }
 
 /* Interactive Exercise Blanks */
@@ -565,9 +615,9 @@ blockquote {
   font-family: var(--font-mono);
   font-size: 0.86rem;
   color: var(--heading);
-  background: #1f2735;
+  background: #1d232f;
   border: 1px solid var(--border-strong);
-  border-radius: 5px;
+  border-radius: 3px;
   padding: 0.1rem 0.38rem;
   margin: 0 0.12rem;
   min-width: 4ch;
@@ -593,11 +643,11 @@ blockquote {
 
 .btn {
   font: inherit;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 600;
-  padding: 0.48rem 0.95rem;
+  padding: 0.46rem 0.95rem;
   min-height: 36px;
-  border-radius: 7px;
+  border-radius: 4px;
   border: 1px solid var(--border-strong);
   background: var(--bg-card);
   color: var(--heading);
@@ -621,7 +671,7 @@ blockquote {
 .feedback-banner {
   margin-top: 0.85rem;
   padding: 0.65rem 0.9rem;
-  border-radius: 7px;
+  border-radius: 4px;
   font-size: 0.9rem;
   border: 1px solid var(--border);
   background: var(--bg-code);
@@ -689,7 +739,7 @@ blockquote {
   align-items: flex-start;
   gap: 0.65rem;
   padding: 0.65rem 0.85rem;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid var(--border);
   background: var(--bg-card);
   color: var(--text);
@@ -732,8 +782,9 @@ blockquote {
 
 /* Cards on Index */
 .card-grid {
+  clear: right;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
   margin: 1.2rem 0 2rem;
 }
@@ -744,7 +795,7 @@ blockquote {
   gap: 0.45rem;
   padding: 1.1rem 1.2rem;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--bg-elev);
   text-decoration: none;
   color: var(--text);
@@ -755,11 +806,12 @@ blockquote {
 }
 
 .lesson-card-meta {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--text-muted);
 }
 
 .course-card-title {
@@ -776,6 +828,7 @@ blockquote {
 
 /* Bottom Lesson Pager */
 .lesson-pager {
+  clear: right;
   margin-top: 3rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border);
@@ -790,7 +843,7 @@ blockquote {
   gap: 0.25rem;
   padding: 0.95rem 1.1rem;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--bg-elev);
   text-decoration: none;
   color: var(--text);
@@ -805,9 +858,10 @@ blockquote {
 }
 
 .pager-label {
-  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--text-muted);
 }
 
 .pager-title {
@@ -832,6 +886,7 @@ blockquote {
     --bg-elev: #ffffff;
     --bg-card: #ffffff;
     --bg-code: #f7f8fa;
+    --surface-band: #ffffff;
     --border: #d0d7de;
     --border-strong: #8c959f;
     --text: #1f2328;
@@ -849,13 +904,26 @@ blockquote {
     display: none !important;
   }
 
-  .lesson-article {
+  .lesson-article,
+  .lesson-article > .page-hero,
+  .lesson-article > h1,
+  .lesson-article > h2,
+  .lesson-article > h3,
+  .lesson-article > h4,
+  .lesson-article > p,
+  .lesson-article > ul,
+  .lesson-article > ol,
+  .lesson-article > blockquote,
+  .lesson-article > .callout,
+  .lesson-article > .teacher-prompt {
     max-width: 100%;
     margin-right: 0;
   }
 
   .sidenote,
-  .sidenote[hidden] {
+  .sidenote[hidden],
+  .lesson-article > p .sidenote,
+  .lesson-article > p .sidenote[hidden] {
     display: block !important;
     float: none;
     width: auto;
