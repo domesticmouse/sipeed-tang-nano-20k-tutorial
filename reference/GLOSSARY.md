@@ -32,6 +32,22 @@ _Avoid_: Thinking `m.d.sync +=` updates a signal immediately within the same cyc
 A hardware convention where logic `0` (0 V / ground) enables a peripheral—such as sinking current through the Tang Nano 20K's six onboard LEDs—and logic `1` (3.3 V) turns it off.
 _Avoid_: Assuming logic `1` always means "on"
 
+**Metastability**:
+An unstable intermediate voltage state that occurs when an asynchronous input signal transitions during a flip-flop's setup or hold window near a rising clock edge.
+_Avoid_: Sampling raw external switches directly inside state-machine or counter logic
+
+**Two-Flop Synchronizer**:
+Two cascaded `m.d.sync` flip-flops (`sync_0` → `sync_1`) that give any metastable voltage on `sync_0` one full clock period to settle before downstream logic reads `sync_1`.
+_Avoid_: Confusing a metastability synchronizer with a mechanical debouncer
+
+**Debouncing**:
+Filtering millisecond-scale mechanical contact chatter from a physical switch using a stability counter so a single press produces exactly one clean state transition.
+_Avoid_: Relying on a 2-flop synchronizer alone to reject millisecond switch bounce
+
+**Rising-Edge Detector**:
+A 1-cycle-delay comparator (`signal & ~prev_signal`) that converts a sustained `0 -> 1` level change into a single-clock-cycle pulse (like an analog synth gate-to-trigger).
+_Avoid_: Triggering an accumulator directly on a held button level
+
 ## 2. FPGA Build Pipeline
 
 **Elaboration**:
@@ -67,3 +83,11 @@ _Avoid_: Omitting the trailing space before `;` or operators after an escaped id
 **Sized Literal (`<width>'<base><value>`)**:
 An explicit-width Verilog constant specifying bit width, radix (`'b` binary, `'d` decimal, `'h` hex), and value (for example `24'hcdfe5f` or `6'h00`).
 _Avoid_: Leaving large literals unsized (which defaults to 32 bits in Verilog)
+
+**Named Port Connection (`.port(signal)`)**:
+Verilog module instantiation syntax binding each child port explicitly by name (`.raw(s2)`) rather than by argument position.
+_Avoid_: Using positional port lists that silently break when port ordering changes
+
+**Bitwise Operators (`&`, `|`, `~`)**:
+Verilog per-bit combinational logic operators (`&` AND, `|` OR, `~` NOT) that wire parallel logic gates across every bit of a signal or bus.
+_Avoid_: Confusing bitwise `&` / `~` with short-circuit logical `&&` / `!`
