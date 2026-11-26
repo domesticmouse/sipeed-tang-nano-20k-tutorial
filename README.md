@@ -10,16 +10,17 @@ Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`
 
 ## Published Course Pages
 - [Course Index](index.md)
-- [Lesson 0001: Blinky in Amaranth & Verilog Dissection](lessons/0001-blinky-amaranth-to-verilog.md)
+- [Lesson 0001: Blinky in Amaranth HDL](lessons/0001-blinky-amaranth-to-verilog.md)
+- [Lesson 0002: Dissecting Generated Verilog](lessons/0002-dissecting-generated-verilog.md)
 - [Reference: Glossary of FPGA & Amaranth Terms](reference/GLOSSARY.md)
 - [Reference: Tang Nano 20K Pinout & Toolchain Sheet](reference/tang-nano-20k-pinout.md)
 
 ## Quick Start
 
 ```bash
-# Run Lesson 0001 simulation tests and linter
-.venv/bin/pytest -v apps/0001-blinky-amaranth-to-verilog/
-.venv/bin/ruff check apps/0001-blinky-amaranth-to-verilog/ build.py
+# Run Lesson 0001 and Lesson 0002 simulation/Verilog tests and linter
+.venv/bin/pytest -v apps/0001-blinky-amaranth-to-verilog/ apps/0002-dissecting-generated-verilog/
+.venv/bin/ruff check apps/0001-blinky-amaranth-to-verilog/ apps/0002-dissecting-generated-verilog/ build.py
 
 # Build and validate the HTML site
 .venv/bin/python .agents/skills/teach-code/scripts/sync_listing.py --check

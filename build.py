@@ -35,6 +35,14 @@ VERIFY_ITEM_RE = re.compile(r"<li>\s*\[([ xX])\]\s*(.*?)</li>", re.DOTALL)
 BARE_TEX_MACRO_RE = re.compile(
     r"\\(?:approx|pm|Omega|times|le|ge|frac|cdot|mu|Delta|alpha|beta)\b"
 )
+COPY_LANG_LABELS = {
+    "bash": "bash commands",
+    "sh": "shell commands",
+    "shell": "shell commands",
+    "python": "Python code",
+    "verilog": "Verilog code",
+    "text": "text block",
+}
 
 MD = MarkdownIt("commonmark", {"html": True, "linkify": False}).enable("table")
 
@@ -107,7 +115,13 @@ def render_inline_md(text: str, rel_out: Path) -> str:
     return rendered
 
 
-def render_code_fence(info: str, body: str, interactive_blanks: bool = False) -> str:
+def render_code_fence(
+    info: str,
+    body: str,
+    interactive_blanks: bool = False,
+    code_block_counter: list[int] | None = None,
+    uncaptioned_counts: dict[str, int] | None = None,
+) -> str:
     parts = info.strip().split(None, 1)
     lang = parts[0] if parts else "text"
     attrs = parse_attrs(parts[1]) if len(parts) > 1 else {}
@@ -134,9 +148,36 @@ def render_code_fence(info: str, body: str, interactive_blanks: bool = False) ->
         escaped = BLANK_RE.sub(replace_blank, escaped)
 
     cap_html = f"<figcaption>{html.escape(caption)}</figcaption>" if caption else ""
+    if interactive_blanks:
+        return (
+            f'<figure class="code-figure">{cap_html}'
+            f'<pre><code class="language-{html.escape(lang)}">{escaped}</code></pre></figure>'
+        )
+
+    counter = code_block_counter if code_block_counter is not None else [0]
+    counts = uncaptioned_counts if uncaptioned_counts is not None else {}
+    counter[0] += 1
+    code_id = f"code-block-{counter[0]}"
+
+    if caption:
+        aria_label = f"Copy {caption}"
+    else:
+        base = COPY_LANG_LABELS.get(lang.lower(), f"{lang} code")
+        counts[base] = counts.get(base, 0) + 1
+        aria_label = f"Copy {base} {counts[base]}"
+
     return (
         f'<figure class="code-figure">{cap_html}'
-        f'<pre><code class="language-{html.escape(lang)}">{escaped}</code></pre></figure>'
+        f'<div class="code-body copyable">'
+        f'<span class="copy">'
+        f'<button type="button" class="copy-button" command="--copy" '
+        f'commandfor="{code_id}" aria-label="{html.escape(aria_label)}">'
+        f'<span class="icon" aria-hidden="true"></span>'
+        f'</button>'
+        f'<span class="tip" role="status"></span>'
+        f'</span>'
+        f'<pre><code id="{code_id}" class="language-{html.escape(lang)}">{escaped}</code></pre>'
+        f'</div></figure>'
     )
 
 
@@ -190,6 +231,8 @@ def render_markdown_fragment(
     *,
     interactive_blanks: bool = False,
     sidenote_start: int = 0,
+    code_block_counter: list[int] | None = None,
+    uncaptioned_counts: dict[str, int] | None = None,
 ) -> tuple[str, int]:
     fenced_blocks: dict[str, str] = {}
     math_blocks: dict[str, str] = {}
@@ -199,7 +242,11 @@ def render_markdown_fragment(
         idx = len(fenced_blocks)
         token = f"\n<!--FENCED_CODE_PLACEHOLDER_{idx}-->\n"
         fenced_blocks[token.strip()] = render_code_fence(
-            m.group(1), m.group(2), interactive_blanks=interactive_blanks
+            m.group(1),
+            m.group(2),
+            interactive_blanks=interactive_blanks,
+            code_block_counter=code_block_counter,
+            uncaptioned_counts=uncaptioned_counts,
         )
         return token
 
@@ -332,6 +379,8 @@ def render_exercise_block(
     rel_out: Path,
     sidenote_start: int,
     errors: list[str],
+    code_block_counter: list[int] | None = None,
+    uncaptioned_counts: dict[str, int] | None = None,
 ) -> tuple[str, int]:
     ex_id = attrs.get("id", "exercise")
     title = attrs.get("title", "Interactive Lab")
@@ -355,7 +404,12 @@ def render_exercise_block(
         errors.append(f"{rel_out}: exercise '{ex_id}' has no {{{{blank:...}}}} tokens")
 
     inner_html, sidenote_count = render_markdown_fragment(
-        inner_md, rel_out, interactive_blanks=True, sidenote_start=sidenote_start
+        inner_md,
+        rel_out,
+        interactive_blanks=True,
+        sidenote_start=sidenote_start,
+        code_block_counter=code_block_counter,
+        uncaptioned_counts=uncaptioned_counts,
     )
 
     hint = str(prompts.get("hint", "Check the highlighted blanks."))
@@ -432,18 +486,28 @@ def render_body_with_directives(
     flush_buf()
 
     sidenote_count = 0
+    code_block_counter = [0]
+    uncaptioned_counts: dict[str, int] = {}
     rendered_parts: list[str] = []
     for chunk_kind, payload in chunks:
         if chunk_kind == "md":
             html_part, sidenote_count = render_markdown_fragment(
-                str(payload), rel_out, sidenote_start=sidenote_count
+                str(payload),
+                rel_out,
+                sidenote_start=sidenote_count,
+                code_block_counter=code_block_counter,
+                uncaptioned_counts=uncaptioned_counts,
             )
             rendered_parts.append(html_part)
         elif chunk_kind in {"callout", "callout-warn", "callout-success", "teacher-prompt"}:
             attrs, block_lines = payload  # type: ignore[misc]
             title = attrs.get("title", "")
             inner_html, sidenote_count = render_markdown_fragment(
-                "\n".join(block_lines), rel_out, sidenote_start=sidenote_count
+                "\n".join(block_lines),
+                rel_out,
+                sidenote_start=sidenote_count,
+                code_block_counter=code_block_counter,
+                uncaptioned_counts=uncaptioned_counts,
             )
             kicker_map = {
                 "callout": "NOTE",
@@ -460,7 +524,11 @@ def render_body_with_directives(
             title = attrs.get("title", "Verification Lab")
             badge = attrs.get("badge", "")
             inner_html, sidenote_count = render_markdown_fragment(
-                "\n".join(block_lines), rel_out, sidenote_start=sidenote_count
+                "\n".join(block_lines),
+                rel_out,
+                sidenote_start=sidenote_count,
+                code_block_counter=code_block_counter,
+                uncaptioned_counts=uncaptioned_counts,
             )
             inner_html = inner_html.replace("<ul>", '<ul class="verify-list">', 1)
             inner_html = VERIFY_ITEM_RE.sub(
@@ -480,7 +548,13 @@ def render_body_with_directives(
         elif chunk_kind == "exercise":
             attrs, block_lines = payload  # type: ignore[misc]
             ex_html, sidenote_count = render_exercise_block(
-                attrs, block_lines, rel_out, sidenote_count, errors
+                attrs,
+                block_lines,
+                rel_out,
+                sidenote_count,
+                errors,
+                code_block_counter=code_block_counter,
+                uncaptioned_counts=uncaptioned_counts,
             )
             rendered_parts.append(ex_html)
         elif chunk_kind == "quiz":
@@ -617,13 +691,14 @@ def build_lesson_pager_html(page: PageMeta, lessons: list[PageMeta]) -> str:
         else '<div class="pager-card" aria-hidden="true"><span class="pager-label">Start of Course</span>'
         '<span class="pager-title">Index</span></div>'
     )
+    next_num = f"{int(page.lesson_num) + 1:04d}" if page.lesson_num.isdigit() else "next"
     next_card = (
         f'<a class="pager-card pager-card-next" href="{prefix}{next_lesson.rel_out.as_posix()}">'
         f'<span class="pager-label">Next • Lesson {html.escape(next_lesson.lesson_num)} →</span>'
         f'<span class="pager-title">{html.escape(next_lesson.title)}</span></a>'
         if next_lesson
         else '<div class="pager-card pager-card-next"><span class="pager-label">Up Next</span>'
-        '<span class="pager-title">Ask your agent for Lesson 0002</span></div>'
+        f'<span class="pager-title">Ask your agent for Lesson {html.escape(next_num)}</span></div>'
     )
     return f'<nav class="lesson-pager" aria-label="Lesson pagination">{prev_card}{next_card}</nav>'
 
@@ -763,6 +838,15 @@ def validate_rendered_html(
         target_path = Path(*norm_parts)
         if target_path not in valid_rel_outputs:
             errors.append(f"{page.rel_out}: broken internal link '{href}' -> '{target_path}'")
+
+    # 6. Check commandfor targets exist and code-block-* IDs are unique
+    code_ids = re.findall(r'\bid="(code-block-\d+)"', body_html)
+    if len(code_ids) != len(set(code_ids)):
+        errors.append(f"{page.rel_out}: duplicate code-block-* IDs in HTML")
+    all_ids = set(re.findall(r'\bid="([^"]+)"', body_html))
+    for target_id in re.findall(r'\bcommandfor="([^"]+)"', body_html):
+        if target_id not in all_ids:
+            errors.append(f"{page.rel_out}: commandfor='{target_id}' references missing element id")
 
 
 def main() -> int:

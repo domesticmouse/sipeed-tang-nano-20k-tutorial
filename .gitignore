@@ -10,6 +10,7 @@ __pycache__/
 apps/*/build/
 apps/*/*.vcd
 apps/*/*.v
+!apps/0002-dissecting-generated-verilog/blinky.v
 apps/*/*.json
 apps/*/*.fs
 .DS_Store

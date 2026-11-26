@@ -49,3 +49,21 @@ _Avoid_: Skipping pin constraint verification before packing
 **Bitstream**:
 The binary configuration image (`.fs`) packed by `gowin_pack` and loaded over JTAG into the FPGA (`openFPGALoader`) to wire its programmable logic fabric.
 _Avoid_: Calling a bitstream "firmware" (it configures physical gates rather than instructions for a CPU)
+
+## 3. Generated Verilog Constructs
+
+**Non-Blocking Assignment (`<=`)**:
+The Verilog assignment operator used inside `always @(posedge clk)` blocks so every flip-flop samples its right-hand expression at the clock edge before updating simultaneously.
+_Avoid_: Using `<=` inside combinational `always @*` blocks
+
+**Blocking Assignment (`=`)**:
+The Verilog assignment operator used inside combinational `always @*` blocks to express top-to-bottom priority mux logic where the last matching assignment wins.
+_Avoid_: Using `=` to update clocked registers inside `always @(posedge clk)`
+
+**Escaped Identifier (`\name `)**:
+A Verilog identifier starting with a backslash (`\`) and terminated by whitespace (such as `\$1 ;`), used by tools like Yosys to emit names containing `$` or punctuation.
+_Avoid_: Omitting the trailing space before `;` or operators after an escaped identifier
+
+**Sized Literal (`<width>'<base><value>`)**:
+An explicit-width Verilog constant specifying bit width, radix (`'b` binary, `'d` decimal, `'h` hex), and value (for example `24'hcdfe5f` or `6'h00`).
+_Avoid_: Leaving large literals unsized (which defaults to 32 bits in Verilog)

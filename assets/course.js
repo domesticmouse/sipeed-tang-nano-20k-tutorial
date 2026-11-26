@@ -15,6 +15,100 @@
       }
     });
 
+    // Copy buttons for code and command blocks (Invoker Commands + click fallback)
+    const copyTimers = new WeakMap();
+    let lastCopyMessage = "";
+
+    const legacyCopy = (text) => {
+      const previousFocus = document.activeElement;
+      const field = Object.assign(document.createElement("textarea"), { value: text });
+      field.setAttribute("readonly", "");
+      field.style.cssText = "position:fixed;inset-block-start:0;opacity:0";
+      document.body.append(field);
+      field.select();
+      try {
+        return document.execCommand("copy");
+      } finally {
+        field.remove();
+        previousFocus?.focus({ preventScroll: true });
+      }
+    };
+
+    const reportCopy = (button, ok) => {
+      const tip = button.nextElementSibling;
+      clearTimeout(copyTimers.get(button));
+      button.removeAttribute("data-copied");
+      button.removeAttribute("data-failed");
+      let message = ok ? "Copied" : "Copy failed";
+      if (message === lastCopyMessage) {
+        message += "\u00A0";
+      }
+      lastCopyMessage = message;
+      if (tip) {
+        tip.textContent = "";
+      }
+      void button.offsetWidth;
+      button.setAttribute(ok ? "data-copied" : "data-failed", "");
+      if (tip) {
+        requestAnimationFrame(() => {
+          tip.textContent = message;
+        });
+      }
+      copyTimers.set(
+        button,
+        setTimeout(() => {
+          button.removeAttribute("data-copied");
+          button.removeAttribute("data-failed");
+          if (tip) {
+            tip.textContent = "";
+          }
+        }, 2000),
+      );
+    };
+
+    const copyFromTarget = async (button, target) => {
+      if (!button || !target) return;
+      const text = target.matches("input, textarea")
+        ? target.value
+        : target.innerText.trimEnd();
+      if (!text.trim()) return;
+
+      if (!navigator.clipboard?.writeText) {
+        reportCopy(button, legacyCopy(text));
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        reportCopy(button, true);
+      } catch {
+        reportCopy(button, legacyCopy(text));
+      }
+    };
+
+    if ("CommandEvent" in window) {
+      document.addEventListener(
+        "command",
+        (event) => {
+          if (event.command === "--copy") {
+            copyFromTarget(event.source, event.target);
+          }
+        },
+        true,
+      );
+    } else {
+      document.addEventListener("click", (event) => {
+        if (event.defaultPrevented) return;
+        const button = event.target.closest('button[command="--copy"]');
+        if (!button) return;
+        const targetId = button.getAttribute("commandfor");
+        const target = targetId ? document.getElementById(targetId) : null;
+        if (target) {
+          copyFromTarget(button, target);
+        }
+      });
+    }
+
     // Narrow-viewport sidenote toggles
     document.querySelectorAll(".sidenote-toggle").forEach((btn) => {
       const targetId = btn.getAttribute("aria-controls");

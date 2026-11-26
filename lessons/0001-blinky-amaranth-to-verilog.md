@@ -1,12 +1,12 @@
 ---
-title: "Blinky in Amaranth & Verilog Dissection"
-page_title: "Lesson 0001: Blinky in Amaranth & Verilog Dissection — Tang Nano 20K"
+title: "Blinky in Amaranth HDL"
+page_title: "Lesson 0001: Blinky in Amaranth HDL — Tang Nano 20K"
 nav_id: "lesson-0001"
-badge: "Lesson 0001 • LEDs & Verilog Assimilation"
-subtitle: "Build a 6-bit hardware binary counter in Amaranth HDL, test it cycle-by-cycle in pytest, dissect every line of the generated Verilog, and flash it to your Tang Nano 20K."
+badge: "Lesson 0001 • LEDs & Synchronous Counters"
+subtitle: "Build a 6-bit hardware binary counter in Amaranth HDL, verify active-low LED output cycle-by-cycle in pytest, map QN88 pins, and flash it to your Tang Nano 20K."
 card:
-  title: "**Blinky in Amaranth & Verilog Dissection**"
-  summary: "Wire your first synchronous counter in Amaranth, verify active-low LED output in pytest, and map the generated Verilog back to Python."
+  title: "**Blinky in Amaranth HDL**"
+  summary: "Wire your first synchronous counter in Amaranth, verify active-low LED output in pytest, and flash your Tang Nano 20K."
 ---
 
 :::callout title="Recommended Primary Sources"
@@ -173,76 +173,9 @@ if __name__ == "__main__":
     main()
 ```
 
-## 3. Dissecting the Generated Verilog {#verilog-dissection}
+## 3. Mapping Pins with `tangnano20k.cst` {#constraints}
 
-Running `python blinky.py --verilog` elaborates `Blinky` and invokes Yosys's Verilog backend (`emit_src=False`) to produce `build/blinky.v`. Even if you have never written Verilog before, you can already read every single line below by matching it to the three blocks you just wrote:
-
-```verilog caption="Exact generated Verilog output from apps/0001-blinky-amaranth-to-verilog/blinky.v"
-(* top = 1 *)
-(* generator = "Amaranth" *)
-module blinky(rst, leds, clk);
-  reg \$auto$verilog_backend.cc:2542:dump_module$1  = 0;
-  input rst;
-  wire rst;
-  output [5:0] leds;
-  wire [5:0] leds;
-  input clk;
-  wire clk;
-  wire \$1 ;
-  wire [6:0] \$2 ;
-  wire [24:0] \$3 ;
-  reg [23:0] \$4 ;
-  reg [5:0] \$5 ;
-  reg [5:0] pattern = 6'h00;
-  reg [23:0] timer = 24'h000000;
-  always @(posedge clk)
-    timer <= \$4 ;
-  always @(posedge clk)
-    pattern <= \$5 ;
-  assign \$1  = timer == 24'hcdfe5f;
-  assign \$2  = pattern + 1'h1;
-  assign \$3  = timer + 1'h1;
-  assign leds = ~ pattern;
-  always @* begin
-    if (\$auto$verilog_backend.cc:2542:dump_module$1 ) begin end
-    (* full_case = 1 *)
-    if (\$1 ) begin
-      \$4  = 24'h000000;
-    end else begin
-      \$4  = \$3 [23:0];
-    end
-    if (rst) begin
-      \$4  = 24'h000000;
-    end
-  end
-  always @* begin
-    if (\$auto$verilog_backend.cc:2542:dump_module$1 ) begin end
-    \$5  = pattern;
-    if (\$1 ) begin
-      \$5  = \$2 [5:0];
-    end
-    if (rst) begin
-      \$5  = 6'h00;
-    end
-  end
-endmodule
-```
-
-Table: Mapping Amaranth constructs to their generated Verilog equivalents.
-
-| Amaranth Code | Generated Verilog | Hardware Meaning |
-| :--- | :--- | :--- |
-| `class Blinky` + `leds: Out(6)` | `module blinky(rst, leds, clk);` and `output [5:0] leds;` | Module ports; `[5:0]` is a 6-bit MSB-to-LSB bus |
-| `timer = Signal(range(13_500_000))` | `reg [23:0] timer = 24'h000000;` | 24-bit flip-flop bank initialized to hex `0` (`13_499_999` is `24'hcdfe5f`) |
-| `m.d.sync += ...` | `always @(posedge clk) timer <= \$4 ;` | Non-blocking (`<=`) latch updating on every rising clock edge |
-| `m.d.comb += self.leds.eq(~pattern)` | `assign leds = ~ pattern;` | Continuous combinational wire inversion |
-| `with m.If(...)` / `rst` | `always @* begin ... if (rst) ... end` | Combinational next-state mux (`\$4`, `\$5`) feeding the flip-flops |
-
-Notice the crucial Verilog distinction that trips up beginners when writing raw Verilog by hand: inside `always @(posedge clk)` the generated code uses **`<=`** (non-blocking flip-flop assignment), whereas inside `always @*` it uses **`=`** (combinational next-state mux evaluation). Amaranth enforces that split for you automatically through `m.d.sync` and `m.d.comb` while teaching you to spot the pattern in Verilog!
-
-## 4. Mapping Pins with `tangnano20k.cst` {#constraints}
-
-The generated Verilog has three top-level ports: `clk`, `rst`, and `leds[5:0]`. The physical constraints file (`tangnano20k.cst`) binds those logical names to physical pins on the QN88 package:
+The exported `blinky` module has three top-level ports: `clk`, `rst`, and `leds[5:0]`. The physical constraints file (`tangnano20k.cst`) binds those logical names to physical pins on the QN88 package:
 
 ```text caption="Excerpt from apps/0001-blinky-amaranth-to-verilog/tangnano20k.cst"
 IO_LOC "clk" 4;
@@ -256,6 +189,10 @@ IO_PORT "leds[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
 ```
 
 Notice `rst` on pin `88` (`S1` button) uses `PULL_MODE=DOWN` because pressing `S1` pulls the pin high (`1`), resetting `timer` and `pattern` back to `0` while held.
+
+:::callout title="Where Did the Generated Verilog Go?"
+Running `blinky.py --verilog` emits `build/blinky.v` for the Gowin synthesis toolchain (`yosys`). If that generated Verilog file looks cryptic right now, that's completely normal—head to [Lesson 0002: Dissecting Generated Verilog](0002-dissecting-generated-verilog.md) for a full, line-by-line breakdown of every symbol inside it.
+:::
 
 :::exercise id="ex-0001" title="Interactive Lab: Blinky Domains & Active-Low Polarity" badge="Skill Practice • Tight Feedback Loop"
 Fill in the missing Amaranth domain names and bitwise operator so `pattern` updates on the clock edge and `leds` lights active-low:
@@ -302,7 +239,7 @@ make -C apps/0001-blinky-amaranth-to-verilog flash
 - [ ] On the breadboarded Tang Nano 20K, the 6 LEDs count upward in binary every $0.5\text{ s}$, and holding `S1` (`pin 88`) holds `rst` high and turns all LEDs off.
 :::
 
-:::quiz id="quiz-0001" title="Retrieval Practice: Amaranth & Generated Verilog" badge="3 Questions • Equal-Length Options"
+:::quiz id="quiz-0001" title="Retrieval Practice: Amaranth Domains & Tang Nano 20K Pins" badge="3 Questions • Equal-Length Options"
 - question: "In Amaranth HDL, what hardware circuit does an assignment inside `m.d.sync` synthesize into compared with `m.d.comb`?"
   wrong_hint: "Compare edge-triggered flip-flops against unclocked combinational gates."
   options:
@@ -341,29 +278,29 @@ make -C apps/0001-blinky-amaranth-to-verilog flash
       text: "Amaranth stores all unsigned counters in one's complement"
       correct: false
       explain: "Amaranth `Signal` arithmetic uses standard binary/two's-complement representation."
-- question: "In the generated Verilog from `Blinky`, what does `always @(posedge clk)` followed by `timer <= $4;` express?"
-  wrong_hint: "Think about what `posedge clk` and non-blocking `<=` mean in digital logic."
+- question: "Why does `tangnano20k.cst` configure button `S1` (`rst` on pin 88) with `PULL_MODE=DOWN` instead of `PULL_MODE=UP`?"
+  wrong_hint: "Check what logic level resets timer and pattern when S1 is pressed versus released."
   options:
     - letter: "A"
-      text: "A continuous wire connecting the crystal to pins"
+      text: "Button S1 sinks current through all six onboard LED cathodes"
       correct: false
-      explain: "Continuous wires use `assign`, whereas `always @(posedge clk)` describes clocked storage."
+      explain: "The six onboard LEDs are active-low outputs on pins 15 through 20, unrelated to button S1."
     - letter: "B"
-      text: "A software while-loop polling the button state repeatedly"
+      text: "Pin 88 requires an internal pull-down to output 27 MHz"
       correct: false
-      explain: "`always @(posedge clk)` models hardware flip-flops triggered by clock edges, not a CPU loop."
+      explain: "The 27 MHz crystal drives input pin 4, not user reset button pin 88."
     - letter: "C"
-      text: "A combinational mux evaluated whenever any input changes"
-      correct: false
-      explain: "That describes the `always @*` block that computes `$4`, not the `posedge clk` flip-flop."
-    - letter: "D"
-      text: "A synchronous register latching next-state on clock edges"
+      text: "Released S1 must idle low so pressing pulls rst high"
       correct: true
-      explain: "`always @(posedge clk)` with `<=` describes flip-flops latching `$4` at each rising edge of `clk`."
+      explain: "S1 connects pin 88 to +3.3 V when pressed, so PULL_MODE=DOWN holds rst at 0 while unpressed."
+    - letter: "D"
+      text: "Amaranth ignores rst unless every button uses active-low input polarity"
+      correct: false
+      explain: "Amaranth's default sync reset is active-high (1 resets registers to 0), which matches S1 pressing high."
 :::
 
 :::teacher-prompt title="Extend This Lesson with Your Agent"
-Once you've inspected `build/blinky.v` or flashed your board, ask your AI teacher:
-- *"Can we walk through why `$2` is 7 bits wide (`[6:0]`) and `$3` is 25 bits wide (`[24:0]`) in the generated Verilog?"*
-- *"I've flashed Lesson 0001 and confirmed the LEDs count in binary — let's move on to Lesson 0002 (Buttons & Debouncing)!"*
+Once you've simulated `Blinky` or flashed your Tang Nano 20K, continue to [Lesson 0002: Dissecting Generated Verilog](0002-dissecting-generated-verilog.md) or ask your AI teacher:
+- *"Can we double-check why `m.d.sync` and `m.d.comb` behave like sample-and-hold stages versus op-amp buffers?"*
+- *"I've verified Lesson 0001 — let's dive into Lesson 0002 and break down every line of `blinky.v`!"*
 :::
