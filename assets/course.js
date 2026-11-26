@@ -28,11 +28,22 @@
       });
     });
 
-    // Mermaid dark theme
+    // Mermaid Bench Oscilloscope dark theme
     if (window.mermaid) {
       window.mermaid.initialize({
         startOnLoad: true,
-        theme: "dark",
+        theme: "base",
+        themeVariables: {
+          darkMode: true,
+          background: "#151311",
+          primaryColor: "#201d1a",
+          primaryTextColor: "#ebe5dc",
+          primaryBorderColor: "#474038",
+          lineColor: "#e5a94c",
+          secondaryColor: "#191715",
+          tertiaryColor: "#191715",
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif",
+        },
         securityLevel: "loose",
       });
     }
