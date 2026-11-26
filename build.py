@@ -682,7 +682,7 @@ def wrap_html_document(page: PageMeta, nav_html: str, body_html: str, pager_html
     </article>
   </main>
   <footer class="site-footer">
-    Sipeed Tang Nano 20K Course • Amaranth HDL + Verilog by Assimilation
+    Sipeed Tang Nano 20K Course • Apache 2.0 License • Not an officially supported Google product.
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@{PRISM_VERSION}/components/prism-core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@{PRISM_VERSION}/plugins/autoloader/prism-autoloader.min.js"></script>

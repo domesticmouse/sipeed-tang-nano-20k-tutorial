@@ -2,6 +2,8 @@
 
 Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`GW2AR-LV18QN88C8/I7`) on macOS Apple Silicon (`arm64`).
 
+**Live Course Site:** https://domesticmouse.github.io/sipeed-tang-nano-nano-20k-tutorial/
+
 ## Progression
 - **LEDs & Buttons → USB-UART → HDMI Video → Retro Gaming**
 - Every lesson pairs a runnable Amaranth HDL project in `apps/` (verified with `pytest` and `ruff`) with a line-by-line dissection of its generated Verilog and open-source bitstream flashing (`yosys` + `nextpnr-himbaechel` + `gowin_pack` + `openFPGALoader`).
@@ -23,3 +25,11 @@ Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`
 .venv/bin/python .agents/skills/teach-code/scripts/sync_listing.py --check
 .venv/bin/python build.py --check
 ```
+
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
+
+## Disclaimer
+
+This is not an officially supported Google product.
