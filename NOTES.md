@@ -52,5 +52,14 @@
   - `0036-c64-vic-ii-generated-verilog`: Dissecting VIC-II bus arbitration, raster-timing, and sprite-compositing Verilog.
   - `0037-c64-cia-keyboard-and-integration`: Dual CIA 6526 timers/I/O, keyboard input (UART/PS2/USB), `.prg` loading, and full C64 integration in Amaranth.
   - `0038-c64-full-core-generated-verilog`: Dissecting CIA timer/I/O, keyboard matrix, and full integrated C64 Verilog.
+- **Phase 7 — Eurorack Audio-to-Video Synthesizer**
+  - `0039-i2s-audio-input-and-eurorack-afe`: Eurorack ±5 V → 3 Vpp TL074 attenuator/AC-coupled front-end, `PCM1808` stereo I2S audio ADC receiver (MCLK derived from 27 MHz), and dual-port Block RAM ring buffer in Amaranth.
+  - `0040-i2s-audio-input-generated-verilog`: Dissecting I2S bit-clock/word-select framing, serial-to-parallel shift registers, and ring-buffer Verilog.
+  - `0041-spi-cv-adc-and-panel-controls`: DC-coupled TL074 ±5 V → 0–3.3 V scaling/offset + Schottky clamping front-end and `MCP3208` 8-channel 12-bit SPI ADC controller for Eurorack CV and front-panel pots in Amaranth.
+  - `0042-spi-cv-adc-generated-verilog`: Dissecting multi-channel SPI polling FSM, channel-mux registers, and ADC sample latching Verilog.
+  - `0043-audio-reactive-raster-and-scope`: Zero-crossing trigger, envelope follower DSP, and real-time 640×480 HDMI oscilloscope, X/Y Lissajous, and audio-modulated raster-bar video synthesis in Amaranth.
+  - `0044-audio-reactive-raster-generated-verilog`: Dissecting trigger hysteresis, DSP envelope/scaling pipelines, and live raster pixel-generator Verilog.
+  - `0045-video-feedback-and-eurorack-module`: On-chip 64 Mbit SDRAM framebuffer feedback/phosphor-persistence effects, Eurorack ±12 V / 5 V buck power distribution, and full standalone Eurorack audio-to-video module integration in Amaranth.
+  - `0046-eurorack-video-synth-generated-verilog`: Dissecting the SDRAM feedback compositor and full Eurorack audio-to-video synthesizer Verilog.
 - **Future Phase (Optional) — Reading, Dissecting & Porting Existing Verilog Cores**
   - Potential follow-on phase after the Amaranth-authored cores: applying the Verilog literacy built across all even-numbered lessons to read, simulate, port, and customize existing open-source Verilog cores on the Tang Nano 20K.

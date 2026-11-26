@@ -6,7 +6,7 @@ badge: "Interactive Hardware Course"
 subtitle: "Learn FPGA design from scratch on a breadboarded Tang Nano 20K: write clean hardware in Amaranth HDL, verify with pytest, and dissect the generated Verilog."
 ---
 
-Welcome! This hands-on course takes you from software, C/MCU tinkering, and analog synth circuits to building real FPGA hardware on the **Sipeed Tang Nano 20K** (`GW2AR-LV18QN88C8/I7`). Each lesson builds a runnable, tested companion design under `apps/` following a concrete hardware progression: **LEDs & Buttons → USB-UART → HDMI Video → Retro Gaming → Game Boy (DMG) → Commodore 64**.
+Welcome! This hands-on course takes you from software, C/MCU tinkering, and analog synth circuits to building real FPGA hardware on the **Sipeed Tang Nano 20K** (`GW2AR-LV18QN88C8/I7`). Each lesson builds a runnable, tested companion design under `apps/` following a concrete hardware progression: **LEDs & Buttons → USB-UART → HDMI Video → Retro Gaming → Game Boy (DMG) → Commodore 64 → Eurorack Video Synth**.
 
 :::callout title="Course Workflow: Amaranth First, Verilog by Assimilation"
 1. **Write** hardware modules in Python using Amaranth's `wiring.Component` and explicit `m.d.sync` / `m.d.comb` domains.

@@ -5,7 +5,7 @@ Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`
 **Live Course Site:** https://domesticmouse.github.io/sipeed-tang-nano-20k-tutorial/
 
 ## Progression
-- **LEDs & Buttons → USB-UART → HDMI Video → Retro Gaming → Game Boy (DMG) → Commodore 64**
+- **LEDs & Buttons → USB-UART → HDMI Video → Retro Gaming → Game Boy (DMG) → Commodore 64 → Eurorack Video Synth**
 - Lessons follow a paired two-lesson cadence: each odd-numbered lesson introduces a hardware concept in Amaranth HDL (verified with `pytest`, `ruff`, and open-source flashing via `yosys` + `nextpnr-himbaechel` + `gowin_pack` + `openFPGALoader`), and the following even-numbered lesson dissects its generated Verilog line by line.
 
 ## Published Course Pages
