@@ -2,7 +2,7 @@
 
 Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`GW2AR-LV18QN88C8/I7`) on macOS Apple Silicon (`arm64`).
 
-**Live Course Site:** https://domesticmouse.github.io/sipeed-tang-nano-nano-20k-tutorial/
+**Live Course Site:** https://domesticmouse.github.io/sipeed-tang-nano-20k-tutorial/
 
 ## Progression
 - **LEDs & Buttons → USB-UART → HDMI Video → Retro Gaming**
