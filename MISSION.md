@@ -12,7 +12,7 @@ Go from software, microcontroller, and analog-synth tinkering to designing, simu
 ## Constraints
 - Hardware: Sipeed Tang Nano 20K (`GW2AR-LV18QN88C8/I7`, QN88 package) mounted on a breadboard.
 - Host: macOS Apple Silicon (`arm64`) using open-source tooling (`uv`, Python + Amaranth HDL, `pytest`, OSS CAD Suite: `yosys`, `nextpnr-himbaechel`, `gowin_pack`, `openFPGALoader`).
-- Learning strategy: Author in Amaranth HDL (`amaranth.lib.wiring.Component`), dissect generated Verilog in every lesson.
+- Learning strategy: Author in Amaranth HDL (`amaranth.lib.wiring.Component`) and follow a two-lesson cadence: introduce each concept in Amaranth HDL, then dedicate the next lesson to dissecting its generated Verilog.
 
 ## Out of scope
 - Proprietary Gowin EDA IDE workflows (Windows/Linux GUI).

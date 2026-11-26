@@ -23,7 +23,7 @@ Table: Tang Nano 20K core hardware specifications.
 
 ## 2. Verified Onboard Pinout {#pinout}
 
-Table: Verified `QN88` pin assignments used across Lessons 0001–0005.
+Table: Verified `QN88` pin assignments used across Phases 1–2 (LEDs, Buttons, and USB-UART).
 
 | Signal | Pin | Polarity | `IO_PORT` Attributes | Peripheral |
 | :--- | :--- | :--- | :--- | :--- |

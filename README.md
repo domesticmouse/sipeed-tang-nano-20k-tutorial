@@ -6,7 +6,7 @@ Interactive, test-verified FPGA course targeting the **Sipeed Tang Nano 20K** (`
 
 ## Progression
 - **LEDs & Buttons → USB-UART → HDMI Video → Retro Gaming**
-- Every lesson pairs a runnable Amaranth HDL project in `apps/` (verified with `pytest` and `ruff`) with a line-by-line dissection of its generated Verilog and open-source bitstream flashing (`yosys` + `nextpnr-himbaechel` + `gowin_pack` + `openFPGALoader`).
+- Lessons follow a paired two-lesson cadence: each odd-numbered lesson introduces a hardware concept in Amaranth HDL (verified with `pytest`, `ruff`, and open-source flashing via `yosys` + `nextpnr-himbaechel` + `gowin_pack` + `openFPGALoader`), and the following even-numbered lesson dissects its generated Verilog line by line.
 
 ## Published Course Pages
 - [Course Index](index.md)
