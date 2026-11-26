@@ -48,6 +48,22 @@ _Avoid_: Relying on a 2-flop synchronizer alone to reject millisecond switch bou
 A 1-cycle-delay comparator (`signal & ~prev_signal`) that converts a sustained `0 -> 1` level change into a single-clock-cycle pulse (like an analog synth gate-to-trigger).
 _Avoid_: Triggering an accumulator directly on a held button level
 
+**Pulse-Width Modulation (PWM)**:
+Driving a digital pin between `0` and `1` at a fixed high carrier frequency while varying the fraction of time spent active so slow observers (like LEDs or human eyes) perceive smooth analog intensity.
+_Avoid_: Confusing a digital PWM square wave with an analog voltage DAC
+
+**Duty Cycle**:
+The fraction of one PWM period during which the output signal is active (`duty / 2^width`), controlled in Amaranth by comparing a free-running sawtooth `counter < duty`.
+_Avoid_: Confusing duty cycle (pulse width ratio) with carrier frequency (tick period)
+
+**Finite State Machine (FSM)**:
+A sequential controller (`with m.FSM(...)`) holding a finite set of named modes (`m.State`) that advances synchronously (`m.next = ...`) based on the current state and input conditions.
+_Avoid_: Expecting `m.next = ...` to jump immediately within the current clock cycle
+
+**Moore Machine**:
+A state machine whose outputs (such as `state_leds`) depend exclusively on the current state rather than instantaneous combinational inputs, ensuring clean, glitch-free transitions on clock edges.
+_Avoid_: Leaving combinational outputs unassigned in some `m.State` blocks (which creates unintended latches or stale values)
+
 ## 2. FPGA Build Pipeline
 
 **Elaboration**:
@@ -91,3 +107,19 @@ _Avoid_: Using positional port lists that silently break when port ordering chan
 **Bitwise Operators (`&`, `|`, `~`)**:
 Verilog per-bit combinational logic operators (`&` AND, `|` OR, `~` NOT) that wire parallel logic gates across every bit of a signal or bus.
 _Avoid_: Confusing bitwise `&` / `~` with short-circuit logical `&&` / `!`
+
+**Bit Concatenation (`{a, b}`)**:
+Verilog's MSB-first bus packing syntax placing `a` in the upper (most-significant) bits and `b` in the lower (least-significant) bits—the reverse argument order of Amaranth's LSB-first `Cat(b, a)`.
+_Avoid_: Assuming `{a, b}` places `a` at bit `0` like Amaranth's `Cat`
+
+**Case Statement (`casez`)**:
+Multi-way Verilog branch statement inside `always @*` (often tagged `(* full_case = 1 *)` by Yosys) that decodes an encoded state register (`fsm_state`) while optionally treating `z` or `?` bits as wildcards.
+_Avoid_: Omitting a default assignment before `casez` when some arms leave a signal unchanged
+
+**Logical vs. Bitwise NOT (`!` vs. `~`)**:
+Logical `! expr` reduces any multi-bit bus to a single boolean bit (`1` iff all bits are `0`), whereas bitwise `~ expr` inverts every bit independently preserving bus width.
+_Avoid_: Writing `! bus` when you intend to invert each bit of an active-low output bus
+
+**Unsigned Comparator (`<`)**:
+Continuous combinational magnitude comparison (`counter < duty`) that synthesizes into a parallel subtract/carry chain outputting `1` whenever `counter` is strictly below `duty`.
+_Avoid_: Mixing signed and unsigned operands in `<` comparisons without explicit casts

@@ -12,6 +12,7 @@ apps/*/*.vcd
 apps/*/*.v
 !apps/0002-dissecting-generated-verilog/blinky.v
 !apps/0004-buttons-generated-verilog/buttons.v
+!apps/0006-pwm-fsm-generated-verilog/pwm_breather.v
 apps/*/*.json
 apps/*/*.fs
 .DS_Store
